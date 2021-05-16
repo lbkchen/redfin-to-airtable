@@ -1,11 +1,11 @@
 {
-  "name": "chrome-extension-boilerplate-react",
-  "version": "4.0.1",
-  "description": "A chrome extension boilerplate built with React 17 and Webpack 5",
+  "name": "redfin-to-airtable",
+  "version": "0.1",
+  "description": "Clipping Redfin listings to Airtable",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lxieyang/chrome-extension-boilerplate-react.git"
+    "url": "https://github.com/lbkchen/redfin-to-airtable"
   },
   "scripts": {
     "build": "node utils/build.js",
