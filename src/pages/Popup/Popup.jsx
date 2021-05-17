@@ -1,6 +1,7 @@
 import React from 'react';
+
 import logo from '../../assets/img/logo.svg';
-import Greetings from '../../containers/Greetings/Greetings';
+
 import './Popup.css';
 
 
@@ -8,8 +9,11 @@ const Popup = () => {
 
   const test = () => {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, {greeting: "hello"}, function(response) {
-        console.log(response.farewell);
+      // Selected tab
+      chrome.tabs.sendMessage(tabs[0].id, {action: "clip"}, function(response) {
+        if (response) {
+          console.log(response.farewell);
+        }
       });
     });
   }

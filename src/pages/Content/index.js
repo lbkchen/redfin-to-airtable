@@ -4,6 +4,14 @@ console.log('Content script works!');
 console.log('Must reload extension for modifications to take effect.');
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.action === 'clip') {
+    console.log(document.body);
+    const streetName = document.querySelector(
+      "div[data-rf-test-id='abp-streetLine'] > span"
+    ).textContent;
+    console.log({ streetName });
+  }
+
   console.log(
     sender.tab
       ? 'from a content script:' + sender.tab.url
