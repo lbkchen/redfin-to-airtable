@@ -5,11 +5,14 @@ console.log('Must reload extension for modifications to take effect.');
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === 'clip') {
-    console.log(document.body);
     const streetName = document.querySelector(
       "div[data-rf-test-id='abp-streetLine'] > span"
     ).textContent;
     console.log({ streetName });
+
+    sendResponse({
+      streetName,
+    });
   }
 
   console.log(

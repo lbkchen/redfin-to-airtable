@@ -1,40 +1,71 @@
 import React from 'react';
 
 import logo from '../../assets/img/logo.svg';
-
 import './Popup.css';
 
+import secrets from 'secrets';
 
 const Popup = () => {
+  const [loading, setLoading] = React.useState(false);
+  const [showSuccess, setShowSuccess] = React.useState(false);
 
-  const test = () => {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  const showSuccessToast = () => {
+    setShowSuccess(true);
+    setLoading(false);
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 2000);
+  };
+
+  const clip = () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       // Selected tab
-      chrome.tabs.sendMessage(tabs[0].id, {action: "clip"}, function(response) {
-        if (response) {
-          console.log(response.farewell);
+      chrome.tabs.sendMessage(
+        tabs[0].id,
+        { action: 'clip' },
+        async function (response) {
+          if (response) {
+            const { streetName } = response;
+
+            if (!streetName) {
+              return;
+            }
+
+            // Create listing via Airtable API
+            const API_URL = `https://api.airtable.com/v0/${secrets.AIRTABLE_BASE_KEY}/Listings`;
+
+            setLoading(true);
+            const res = fetch(API_URL, {
+              method: 'POST',
+              mode: 'cors',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${secrets.AIRTABLE_API_KEY}`,
+              },
+              body: JSON.stringify({
+                fields: {
+                  Name: streetName,
+                },
+              }),
+            });
+            showSuccessToast();
+          }
         }
-      });
+      );
     });
-  }
+  };
 
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/pages/Popup/Popup.js</code> and save to reload.
+        {loading ? <p>Clipping in progress...</p> : null}
+        {showSuccess ? <p>✅ Success!</p> : null}
+        {!loading && !showSuccess ? <p>Clip this listing!</p> : null}
 
-        </p>
-        <button onClick={test}>TEST</button>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React!
-        </a>
+        <button onClick={clip} className="button">
+          Add to Airtable
+        </button>
       </header>
     </div>
   );
