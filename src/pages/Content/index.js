@@ -5,14 +5,44 @@ console.log('Must reload extension for modifications to take effect.');
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === 'clip') {
-    const streetName = document.querySelector(
-      "div[data-rf-test-id='abp-streetLine'] > span"
-    ).textContent;
-    console.log({ streetName });
+    const response = {
+      streetName: '',
+      price: '',
+      numBeds: '',
+      numBaths: '',
+      sqft: '',
+    };
 
-    sendResponse({
-      streetName,
-    });
+    try {
+      response.streetName = document.querySelector(
+        "div[data-rf-test-id='abp-streetLine'] > span"
+      ).textContent;
+
+      response.price = Number(
+        document
+          .querySelectorAll(
+            // This is brittle
+            'div.price-section div.statsValue span'
+          )[1]
+          .textContent.replaceAll(',', '')
+      );
+      response.numBeds = Number(
+        document.querySelector('div.beds-section .statsValue').textContent
+      );
+      response.numBaths = Number(
+        document.querySelector('div.baths-section .statsValue').textContent
+      );
+      response.sqft = Number(
+        document
+          .querySelector('div.sqft-section .statsValue')
+          .textContent.replaceAll(',', '')
+      );
+    } catch (err) {
+      console.error(err);
+    }
+
+    sendResponse(response);
+    console.log('Sent response:', response);
   }
 
   console.log(

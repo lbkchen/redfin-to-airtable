@@ -25,30 +25,39 @@ const Popup = () => {
         { action: 'clip' },
         async function (response) {
           if (response) {
-            const { streetName } = response;
-
-            if (!streetName) {
-              return;
-            }
+            const { streetName, price, numBeds, numBaths, sqft } = response;
 
             // Create listing via Airtable API
             const API_URL = `https://api.airtable.com/v0/${secrets.AIRTABLE_BASE_KEY}/Listings`;
 
             setLoading(true);
-            const res = fetch(API_URL, {
-              method: 'POST',
-              mode: 'cors',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${secrets.AIRTABLE_API_KEY}`,
-              },
-              body: JSON.stringify({
-                fields: {
-                  Name: streetName,
+
+            try {
+              const res = fetch(API_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${secrets.AIRTABLE_API_KEY}`,
                 },
-              }),
-            });
-            showSuccessToast();
+                body: JSON.stringify({
+                  fields: {
+                    Name: streetName,
+                    'Listing Price': price,
+                    Bed: numBeds,
+                    Bath: numBaths,
+                    Sqft: sqft,
+                    // Link
+                    // Status
+                    // Lot size
+                    // Days until sold
+                  },
+                }),
+              });
+              showSuccessToast();
+            } catch (err) {
+              console.error(err);
+            }
           }
         }
       );
