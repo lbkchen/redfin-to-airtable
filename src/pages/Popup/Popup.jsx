@@ -25,7 +25,15 @@ const Popup = () => {
         { action: 'clip' },
         async function (response) {
           if (response) {
-            const { streetName, price, numBeds, numBaths, sqft } = response;
+            const {
+              streetName,
+              price,
+              numBeds,
+              numBaths,
+              sqft,
+              lotSqft,
+              tags,
+            } = response;
 
             // Create listing via Airtable API
             const API_URL = `https://api.airtable.com/v0/${secrets.AIRTABLE_BASE_KEY}/Listings`;
@@ -47,9 +55,10 @@ const Popup = () => {
                     Bed: numBeds,
                     Bath: numBaths,
                     Sqft: sqft,
+                    'Lot Sqft': lotSqft,
+                    Tags: tags,
                     // Link
                     // Status
-                    // Lot size
                     // Days until sold
                   },
                 }),

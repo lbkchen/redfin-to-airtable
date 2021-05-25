@@ -11,6 +11,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       numBeds: '',
       numBaths: '',
       sqft: '',
+      lotSqft: '',
+      tags: [],
     };
 
     try {
@@ -37,6 +39,35 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           .querySelector('div.sqft-section .statsValue')
           .textContent.replaceAll(',', '')
       );
+
+      const detailItems = document.querySelectorAll('.propertyDetailItem');
+
+      [...detailItems].forEach((node) => {
+        const valueNode = node.querySelector('.content');
+        if (!valueNode) {
+          return;
+        }
+        const sanitizedNumberValue = valueNode.textContent
+          ? valueNode.textContent.replaceAll(/[^0-9]/g, '')
+          : '';
+
+        if (node.textContent.includes('Lot Size')) {
+          response.lotSqft = Number(sanitizedNumberValue);
+        }
+
+        if (node.textContent.includes('Community')) {
+          response.tags.push(valueNode.textContent);
+        }
+        if (node.textContent.includes('Condo')) {
+          response.tags.push('Condo');
+        }
+        if (node.textContent.includes('Single Family')) {
+          response.tags.push('Single Family');
+        }
+        if (node.textContent.includes('Townhouse')) {
+          response.tags.push('Townhouse');
+        }
+      });
     } catch (err) {
       console.error(err);
     }
