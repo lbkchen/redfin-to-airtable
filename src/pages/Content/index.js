@@ -12,6 +12,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       numBaths: '',
       sqft: '',
       lotSqft: '',
+      area: '',
       tags: [],
     };
 
@@ -51,13 +52,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           ? valueNode.textContent.replaceAll(/[^0-9]/g, '')
           : '';
 
-        if (node.textContent.includes('Lot Size')) {
-          response.lotSqft = Number(sanitizedNumberValue);
+        if (node.textContent.includes('Community')) {
+          response.area = valueNode.textContent;
         }
 
-        if (node.textContent.includes('Community')) {
-          response.tags.push(valueNode.textContent);
-        }
         if (node.textContent.includes('Condo')) {
           response.tags.push('Condo');
         }
@@ -66,6 +64,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         }
         if (node.textContent.includes('Townhouse')) {
           response.tags.push('Townhouse');
+        }
+
+        if (
+          node.textContent.includes('Lot Size') &&
+          !response.tags.includes('Condo')
+        ) {
+          response.lotSqft = Number(sanitizedNumberValue);
         }
       });
     } catch (err) {

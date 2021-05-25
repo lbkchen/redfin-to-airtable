@@ -33,6 +33,7 @@ const Popup = () => {
               sqft,
               lotSqft,
               tags,
+              area,
             } = response;
 
             // Create listing via Airtable API
@@ -54,8 +55,17 @@ const Popup = () => {
                     'Listing Price': price,
                     Bed: numBeds,
                     Bath: numBaths,
-                    Sqft: sqft,
-                    'Lot Sqft': lotSqft,
+                    ...(sqft
+                      ? {
+                          Sqft: sqft,
+                        }
+                      : {}),
+                    ...(lotSqft
+                      ? {
+                          'Lot Sqft': lotSqft,
+                        }
+                      : {}),
+                    Area: area,
                     Tags: tags,
                     // Link
                     // Status
