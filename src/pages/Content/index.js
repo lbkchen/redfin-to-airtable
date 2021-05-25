@@ -14,9 +14,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       lotSqft: '',
       area: '',
       tags: [],
+      url: '',
     };
 
     try {
+      response.url = window.location.href;
+
       response.streetName = document.querySelector(
         "div[data-rf-test-id='abp-streetLine'] > span"
       ).textContent;
