@@ -44,7 +44,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           .textContent.replaceAll(',', '')
       );
 
-      const detailItems = document.querySelectorAll('.propertyDetailItem');
+      const detailItems = document.querySelectorAll('.keyDetail');
 
       [...detailItems].forEach((node) => {
         const valueNode = node.querySelector('.content');
